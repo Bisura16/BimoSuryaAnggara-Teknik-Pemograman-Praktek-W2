@@ -10,25 +10,44 @@ public class Restaurant {
         stok = new int[10];
     }
 
-    public String getNamaMakanan(int id){
-        return this.nama_makanan [id];
+    public String getNamaMakanan(int id) {
+        return this.nama_makanan[id];
     }
-    public double getHargaMakanan(int id){
-        return this.harga_makanan [id];
+
+    public double getHargaMakanan(int id) {
+        return this.harga_makanan[id];
     }
-    public int getStok(int id){
+
+    public int getStok(int id) {
         return this.stok[id];
     }
 
-    
-
-    public void tambahMenuMakanan(String nama, double harga, int stok) {
+    public void setNamaMakanan(int id, String nama) {
         this.nama_makanan[id] = nama;
-        this.harga_makanan[id] = harga;
-        this.stok[id] = (stok < 0) ? 0 : stok;
-        this.nextId();
     }
 
+    public void setHargaMakanan(int id, double harga) {
+        this.harga_makanan[id] = harga;
+    }
+
+    public void setStok(int id, int stok) {
+        if (stok >= 0) {
+            this.stok[id] = stok;
+        } else {
+            System.out.println("Jumlah stok tidak boleh negatif");
+        }
+    }
+
+    public void tambahMenuMakanan(String nama, double harga, int stok) {
+        setNamaMakanan(id, nama);
+        setHargaMakanan(id, harga);
+        if (stok >= 0) {
+            setStok(id, stok);
+            this.nextId();
+        } else {
+            System.out.println("Jumlah stok tidak boleh negatif");
+        }
+    }
 
     public void tampilMenuMakanan() {
         for (int i = 0; i < id; i++) {
@@ -39,8 +58,19 @@ public class Restaurant {
         }
     }
 
+    public void pesanMenu(int id, int jumlah) {
+        if (!isOutOfStock(id)) {
+            if (getStok(id) >= jumlah) {
+                setStok(id, getStok(id) - jumlah);
+                System.out.println("Pesanan " + jumlah + " " + getNamaMakanan(id) + " berhasil!");
+            } else {
+                System.out.println("Stok " + getNamaMakanan(id) + " tidak cukup untuk memenuhi pesanan.");
+            }
+        }
+    }
+
     public boolean isOutOfStock(int id) {
-        if (stok[id] < 0) {
+        if (getStok(id) <= 0) {
             return true;
         } else {
             return false;
@@ -55,11 +85,17 @@ public class Restaurant {
 class RestaurantMain {
     public static void main(String[] args) {
         Restaurant menu = new Restaurant();
-        menu.tambahMenuMakanan("Pizza", 250000, -1);
+        menu.tambahMenuMakanan("Pizza", 250000, 10);
         menu.tambahMenuMakanan("Spaghetti", 80000, 20);
         menu.tambahMenuMakanan("Tenderloin Steak", 60000, 30);
         menu.tambahMenuMakanan("Chicken Steak", 45000, 30);
+        System.out.println("\nDaftar Menu Makanan");
         menu.tampilMenuMakanan();
-
+        System.out.println("\nPesanan Pelanggan: ");
+        menu.pesanMenu(0, 3);
+        menu.pesanMenu(1, 5);
+        menu.pesanMenu(2, 35);
+        System.out.println("\nmenu makanan setelah pemesanan");
+        menu.tampilMenuMakanan();
     }
-}   
+}
